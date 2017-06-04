@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+
+<head>
+
+    <meta charset="utf-8">
+
+    <title>STXNext JavaScript entry test 2017</title>
+
+    <style type="text/css">
+
+        #loadingIndicator {
+
+            color: #999;
+
+        }
+
+        #error {
+
+            color: #aa0000;
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<button id="getItemsButton">
+
+    Fetch items from server
+
+</button>
+
+<span id="loadingIndicator" style="display: none">Loading...</span>
+
+<span id="error"></span>
+
+<div id="results"></div>
+
+<script type="text/javascript">
+
+    document.getElementById("getItemsButton").addEventListener("click", getDataFromBackend);
+    function getDataFromBackend() {
+
+        document.getElementById("error").innerHTML='';
+        document.getElementById("results").innerHTML='';
+        document.getElementById("getItemsButton").disabled = true;
+        document.getElementById("loadingIndicator").style.display= '';
+        var myPromise =  new Promise(function (resolve, reject) {
+
+            setTimeout(() => {
+
+                if (Math.random() < 0.3 ? true : false) {
+                var fulfilled = {
+
+                    status: 200,
+
+                    items: [
+
+                        { 'name': 'Teddy Bear', 'price': 5.0 },
+
+                        { 'name': 'Book', 'price': 15.0 },
+
+                        { 'name': 'Remote controlled car', 'price': 50.0 }
+
+                    ]
+
+                }
+                resolve(fulfilled);
+                document.getElementById("getItemsButton").disabled = false;
+                document.getElementById("loadingIndicator").style.display= 'none';
+            } else {
+                var error = {
+
+                    status: 500,
+
+                    message: 'Internal Server Error'
+
+                }
+                reject(error);
+
+                document.getElementById("getItemsButton").disabled = false;
+                document.getElementById("loadingIndicator").style.display= 'none';
+            }
+
+        }, 1000);
+
+
+
+        });
+
+        myPromise.then( fulfilled => {
+            var data = fulfilled.items;
+            var arr = "<ul>";
+            for(var i = 0; i < data.length;i++){
+                arr += "<li>Name: " + data[i].name + " Price: " + data[i].price + "</li>";
+            }
+            arr += "</ul>";
+            document.getElementById("results").innerHTML= "There are " + data.length + " items" + arr;
+    })  .catch(error => {
+            document.getElementById("error").innerHTML= error.message;
+    }) ;
+
+
+    }
+
+</script>
+
+</body>
